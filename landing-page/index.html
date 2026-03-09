@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BestInSeattle — Discover what's actually worth doing.</title>
+  <meta name="description" content="Premium editorial guide to Seattle + PNW events, restaurants, and local gems. Curated manually for locals and visitors.">
+  <meta name="impact-site-verification" content="285eac6f-8d74-49eb-8c16-443fcc23e373">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #FAF8F5;
+      --surface: #F0EDE8;
+      --border: #E0DCD5;
+      --foreground: #1A1A1A;
+      --muted: #6B6B6B;
+      --accent: #B8963E;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--foreground);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Header */
+    header {
+      border-bottom: 1px solid var(--border);
+      background: rgba(250, 248, 245, 0.95);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .header-inner {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      text-decoration: none;
+      color: var(--foreground);
+    }
+
+    .logo span { color: var(--accent); }
+
+    .header-nav {
+      display: flex;
+      gap: 24px;
+      list-style: none;
+    }
+
+    .header-nav a {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .header-nav a:hover { color: var(--foreground); }
+
+    /* Hero */
+    .hero {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 80px 24px 60px;
+      text-align: center;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 24px;
+    }
+
+    h1 {
+      font-size: clamp(32px, 6vw, 52px);
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      max-width: 700px;
+      margin: 0 auto 20px;
+    }
+
+    .hero-sub {
+      font-size: 18px;
+      color: var(--muted);
+      max-width: 520px;
+      margin: 0 auto 40px;
+      line-height: 1.6;
+    }
+
+    .cta-row {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      padding: 14px 28px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s;
+      cursor: pointer;
+      border: none;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #1A1A1A;
+    }
+
+    .btn-primary:hover {
+      background: #a6852f;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(184, 150, 62, 0.3);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--foreground);
+      border: 1px solid var(--border);
+    }
+
+    .btn-outline:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* Pillars */
+    .pillars {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 24px 60px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+    }
+
+    .pillar {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      text-align: center;
+      transition: border-color 0.2s;
+    }
+
+    .pillar:hover { border-color: var(--accent); }
+
+    .pillar-icon { font-size: 28px; margin-bottom: 12px; }
+
+    .pillar h3 {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .pillar p {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    /* Newsletter */
+    .newsletter {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 24px 80px;
+    }
+
+    .newsletter-card {
+      background: var(--foreground);
+      border-radius: 16px;
+      padding: 48px;
+      text-align: center;
+      color: white;
+    }
+
+    .newsletter-card h2 {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      letter-spacing: -0.02em;
+    }
+
+    .newsletter-card p {
+      color: #999;
+      margin-bottom: 28px;
+      font-size: 15px;
+    }
+
+    .email-form {
+      display: flex;
+      gap: 10px;
+      max-width: 440px;
+      margin: 0 auto;
+    }
+
+    .email-form input {
+      flex: 1;
+      padding: 14px 18px;
+      border-radius: 999px;
+      border: 1px solid #333;
+      background: #222;
+      color: white;
+      font-size: 14px;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .email-form input::placeholder { color: #666; }
+    .email-form input:focus { border-color: var(--accent); }
+
+    .email-form button {
+      padding: 14px 24px;
+      border-radius: 999px;
+      background: var(--accent);
+      color: #1A1A1A;
+      font-size: 14px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 0.2s;
+      white-space: nowrap;
+    }
+
+    .email-form button:hover { background: #a6852f; }
+
+    .form-note {
+      color: #555;
+      font-size: 12px;
+      margin-top: 12px;
+    }
+
+    /* Zones */
+    .zones {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 24px 60px;
+      text-align: center;
+    }
+
+    .zones h2 {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      letter-spacing: -0.02em;
+    }
+
+    .zones > p {
+      color: var(--muted);
+      font-size: 15px;
+      margin-bottom: 24px;
+    }
+
+    .zone-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+    }
+
+    .zone-tag {
+      padding: 8px 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--muted);
+      transition: all 0.2s;
+      cursor: default;
+    }
+
+    .zone-tag:hover {
+      border-color: var(--accent);
+      color: var(--foreground);
+    }
+
+    /* Footer */
+    footer {
+      margin-top: auto;
+      border-top: 1px solid var(--border);
+      padding: 32px 24px;
+    }
+
+    .footer-inner {
+      max-width: 960px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .footer-brand {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .footer-brand span { color: var(--accent); }
+
+    .footer-text {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 20px;
+      list-style: none;
+    }
+
+    .footer-links a {
+      font-size: 13px;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover { color: var(--foreground); }
+
+    /* Mobile */
+    @media (max-width: 640px) {
+      .header-nav { display: none; }
+      .hero { padding: 48px 24px 40px; }
+      .newsletter-card { padding: 32px 24px; }
+      .email-form { flex-direction: column; }
+      .footer-inner { flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <div style="background:var(--accent);text-align:center;padding:8px 16px;font-size:13px;font-weight:600;color:#1A1A1A;">More coming soon</div>
+
+  <header>
+    <div class="header-inner">
+      <a href="/" class="logo">best<span>InSeattle</span></a>
+      <nav>
+        <ul class="header-nav">
+          <li><a href="#pillars">What We Cover</a></li>
+          <li><a href="#zones">Zones</a></li>
+          <li><a href="#newsletter">Newsletter</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="hero-badge">Seattle + PNW</div>
+    <h1>Discover what's actually worth&nbsp;doing.</h1>
+    <p class="hero-sub">A premium editorial guide to events, restaurants, and local gems — curated manually for locals and visitors.</p>
+    <div class="cta-row">
+      <a href="#newsletter" class="btn btn-primary">Join the Newsletter</a>
+      <a href="#pillars" class="btn btn-outline">See What We Cover</a>
+    </div>
+  </section>
+
+  <section class="pillars" id="pillars">
+    <div class="pillar">
+      <div class="pillar-icon">&#127926;</div>
+      <h3>Events</h3>
+      <p>Concerts, festivals, shows, and markets worth your time.</p>
+    </div>
+    <div class="pillar">
+      <div class="pillar-icon">&#127860;</div>
+      <h3>Eat + Drink</h3>
+      <p>Restaurants, bars, coffee, and bakeries — hand-picked.</p>
+    </div>
+    <div class="pillar">
+      <div class="pillar-icon">&#127769;</div>
+      <h3>Tonight</h3>
+      <p>What's happening right now, curated for last-minute plans.</p>
+    </div>
+    <div class="pillar">
+      <div class="pillar-icon">&#10084;&#65039;</div>
+      <h3>Date Night</h3>
+      <p>Dinner + event + late-night stop, optimized by zone.</p>
+    </div>
+    <div class="pillar">
+      <div class="pillar-icon">&#127795;</div>
+      <h3>Outdoors</h3>
+      <p>Hikes, parks, and water activities across the PNW.</p>
+    </div>
+  </section>
+
+  <section class="zones" id="zones">
+    <h2>Zones</h2>
+    <p>Go granular by neighborhood and nearby PNW hubs.</p>
+    <div class="zone-grid">
+      <span class="zone-tag">Capitol Hill</span>
+      <span class="zone-tag">Ballard</span>
+      <span class="zone-tag">Fremont</span>
+      <span class="zone-tag">Downtown</span>
+      <span class="zone-tag">Belltown</span>
+      <span class="zone-tag">SLU</span>
+      <span class="zone-tag">Queen Anne</span>
+      <span class="zone-tag">West Seattle</span>
+      <span class="zone-tag">Columbia City</span>
+      <span class="zone-tag">Wallingford</span>
+      <span class="zone-tag">Beacon Hill</span>
+      <span class="zone-tag">University District</span>
+      <span class="zone-tag">Bellevue</span>
+      <span class="zone-tag">Redmond</span>
+      <span class="zone-tag">Kirkland</span>
+      <span class="zone-tag">Tacoma</span>
+    </div>
+  </section>
+
+  <section class="newsletter" id="newsletter">
+    <div class="newsletter-card">
+      <h2>Weekly. Curated. No fluff.</h2>
+      <p>Get the best of Seattle in your inbox every week — events, restaurants, and plans worth making.</p>
+      <form class="email-form" onsubmit="handleSubmit(event)">
+        <input type="email" placeholder="you@email.com" required id="email-input">
+        <button type="submit" id="submit-btn">Subscribe</button>
+      </form>
+      <p class="form-note">Free forever. Unsubscribe anytime.</p>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-inner">
+      <div>
+        <div class="footer-brand">best<span>InSeattle</span></div>
+        <p class="footer-text">Premium local curation for Seattle + PNW.</p>
+      </div>
+      <ul class="footer-links">
+        <li><a href="mailto:hello@bestseattle.co">Contact</a></li>
+        <li><a href="mailto:partnerships@bestseattle.co">Partnerships</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <script>
+    function handleSubmit(e) {
+      e.preventDefault();
+      var btn = document.getElementById('submit-btn');
+      var input = document.getElementById('email-input');
+      btn.textContent = 'Subscribed!';
+      btn.style.background = '#2d7a3a';
+      btn.style.color = 'white';
+      input.disabled = true;
+      btn.disabled = true;
+      setTimeout(function() {
+        btn.textContent = 'Subscribe';
+        btn.style.background = '';
+        btn.style.color = '';
+        input.disabled = false;
+        btn.disabled = false;
+        input.value = '';
+      }, 3000);
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        var target = document.querySelector(this.getAttribute('href'));
+        if (target) target.scrollIntoView({ behavior: 'smooth' });
+      });
+    });
+  </script>
+
+  <div style="display:none;">Impact-Site-Verification: 285eac6f-8d74-49eb-8c16-443fcc23e373</div>
+
+</body>
+</html>
