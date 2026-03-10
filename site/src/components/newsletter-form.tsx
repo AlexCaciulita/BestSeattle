@@ -34,25 +34,26 @@ export default function NewsletterForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="rounded-2xl border border-border bg-surface p-6">
-      <label className="text-sm font-medium">Email address</label>
-      <input
-        type="email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        placeholder="you@domain.com"
-        required
-        className="mt-2 w-full rounded-lg border border-border bg-background px-4 py-3"
-      />
-      <button
-        type="submit"
-        disabled={status === "loading"}
-        className="mt-4 rounded-full bg-accent px-5 py-2 text-sm font-semibold text-black disabled:opacity-50"
-      >
-        {status === "loading" ? "Subscribing..." : "Join"}
-      </button>
+    <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+      <div className="flex overflow-hidden rounded-full border border-[#2a2a2a] bg-[#111] focus-within:border-[#d4af37]/50 transition-colors">
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="your@email.com"
+          required
+          className="flex-1 bg-transparent px-5 py-3.5 text-[13px] text-[#f0f0f0] placeholder:text-[#444] outline-none"
+        />
+        <button
+          type="submit"
+          disabled={status === "loading"}
+          className="shrink-0 rounded-full bg-[#d4af37] px-6 py-3.5 text-[12px] font-bold uppercase tracking-wider text-black transition-opacity hover:opacity-90 disabled:opacity-50 m-0.5"
+        >
+          {status === "loading" ? "..." : "Join"}
+        </button>
+      </div>
       {message && (
-        <p className={`mt-3 text-sm ${status === "success" ? "text-success" : "text-error"}`}>
+        <p className={`text-[12px] ${status === "success" ? "text-[#22c55e]" : "text-[#ef4444]"}`}>
           {message}
         </p>
       )}

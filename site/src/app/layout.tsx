@@ -29,15 +29,15 @@ export default function RootLayout({
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossOrigin="anonymous" />
         <meta name="impact-site-verification" content="285eac6f-8d74-49eb-8c16-443fcc23e373" />
       </head>
       <body>
-        <header className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur-sm">
+        <header className="sticky top-0 z-40 border-b border-border/60 bg-background/90 backdrop-blur-md">
           <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-4">
-            <Link href="/" className="text-lg font-bold tracking-tight">
-              best<span className="text-accent">InSeattle</span>
+            <Link href="/" className="text-[15px] font-bold tracking-tighter">
+              best<span className="text-accent">Seattle</span>
             </Link>
             <nav className="hidden items-center gap-5 text-sm font-medium md:flex">
               {nav.map((item) => (

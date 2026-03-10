@@ -18,20 +18,24 @@
 }
 
 html[data-theme="blackgold"] {
-  --background: #0c0c0c;
-  --surface: #151515;
-  --foreground: #f5f5f5;
-  --muted: #b3b3b3;
-  --border: #2a2a2a;
+  --background: #080808;
+  --surface: #111111;
+  --foreground: #f0f0f0;
+  --muted: #888888;
+  --border: #222222;
   --accent: #d4af37;
-  --surface-hover: #1e1e1e;
-  --placeholder-bg: #222222;
+  --surface-hover: #1a1a1a;
+  --placeholder-bg: #1c1c1c;
   --score-bg: #16a34a;
   --score-fg: #ffffff;
   --status-open: #22c55e;
   --status-closed: #ef4444;
   --success: #22c55e;
   --error: #ef4444;
+}
+
+html[data-theme="blackgold"] body {
+  font-family: "Sora", system-ui, -apple-system, sans-serif;
 }
 
 @theme inline {
@@ -74,4 +78,63 @@ a {
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+
+/* Cinematic carousel row */
+.carousel-row {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding: 6px 0 16px;
+}
+.carousel-row::-webkit-scrollbar {
+  display: none;
+}
+.carousel-row > * {
+  scroll-snap-align: start;
+  flex-shrink: 0;
+}
+
+/* Fade-out right edge for carousels */
+.carousel-fade-right {
+  position: relative;
+}
+.carousel-fade-right::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 100px;
+  background: linear-gradient(to left, var(--background), transparent);
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Hero text animation */
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-up {
+  animation: fade-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.animate-fade-up-delay-1 {
+  animation: fade-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
+}
+.animate-fade-up-delay-2 {
+  animation: fade-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
+}
+.animate-fade-up-delay-3 {
+  animation: fade-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.35s both;
 }
