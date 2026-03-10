@@ -120,6 +120,105 @@ export function getTimePeriodLabel(): string {
 }
 
 /**
+ * Time-aware context for adaptive homepage.
+ * Returns mood, suggested categories, and contextual copy.
+ */
+export type TimeMood = "morning" | "afternoon" | "evening" | "latenight";
+
+export type TimeContext = {
+  mood: TimeMood;
+  greeting: string;
+  headline: string;
+  subline: string;
+  suggestedCategories: string[];
+  isDark: boolean;
+  dayName: string;
+  hour: number;
+  isWeekend: boolean;
+  isFridayEvening: boolean;
+};
+
+export function getTimeContext(): TimeContext {
+  const now = pacificNow();
+  const hour = now.getHours();
+  const day = now.getDay(); // 0=Sun, 6=Sat
+  const dayName = now.toLocaleDateString("en-US", { weekday: "long" });
+  const isWeekend = day === 0 || day === 6;
+  const isFridayEvening = day === 5 && hour >= 17;
+
+  if (hour >= 22 || hour < 5) {
+    return {
+      mood: "latenight",
+      greeting: "Late Night",
+      headline: "Still\nOut?",
+      subline: "Bars closing soon. Late-night eats. After-parties.",
+      suggestedCategories: ["bars", "late-night", "concerts", "comedy"],
+      isDark: true,
+      dayName,
+      hour,
+      isWeekend,
+      isFridayEvening,
+    };
+  }
+
+  if (hour >= 17) {
+    return {
+      mood: "evening",
+      greeting: isFridayEvening ? "It's Friday" : `${dayName} Evening`,
+      headline: isFridayEvening
+        ? "You Need\na Plan"
+        : "What's\nTonight",
+      subline: isFridayEvening
+        ? "Friday night is here. Don't waste it scrolling."
+        : "Dinner reservations. Live shows. Spontaneous plans.",
+      suggestedCategories: ["dinner", "concerts", "comedy", "bars", "theater"],
+      isDark: true,
+      dayName,
+      hour,
+      isWeekend,
+      isFridayEvening,
+    };
+  }
+
+  if (hour >= 12) {
+    return {
+      mood: "afternoon",
+      greeting: `${dayName} Afternoon`,
+      headline: isWeekend ? "Your\nWeekend" : "Plan\nTonight",
+      subline: isWeekend
+        ? "Markets, hikes, and places you haven't tried yet."
+        : "Still time to lock in dinner and a show.",
+      suggestedCategories: isWeekend
+        ? ["outdoors", "markets", "family", "brunch", "food"]
+        : ["dinner", "concerts", "happy-hour", "theater"],
+      isDark: false,
+      dayName,
+      hour,
+      isWeekend,
+      isFridayEvening,
+    };
+  }
+
+  // Morning (5-11)
+  return {
+    mood: "morning",
+    greeting: `${dayName} Morning`,
+    headline: isWeekend ? "Weekend\nBrunch?" : "Good\nMorning",
+    subline: isWeekend
+      ? "Brunch spots, coffee, and farmers markets are calling."
+      : "Coffee first. Then tonight's plan.",
+    suggestedCategories: isWeekend
+      ? ["brunch", "coffee", "markets", "outdoors"]
+      : ["coffee", "restaurants", "events"],
+    isDark: false,
+    dayName,
+    hour,
+    isWeekend,
+    isFridayEvening,
+  };
+}
+
+/**
  * Format a start time relative to now.
  * E.g. "Happening now", "Starts in 45 min", "Tonight at 8 PM", "Tomorrow at 7 PM"
  */

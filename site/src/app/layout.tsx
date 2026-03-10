@@ -53,7 +53,7 @@ export default function RootLayout({
           </div>
         </header>
         <main>{children}</main>
-        <footer className="mt-16 border-t border-border">
+        <footer className="mt-16 border-t border-border pb-16 md:pb-0">
           <div className="mx-auto grid max-w-6xl gap-6 px-6 py-10 text-sm text-muted md:grid-cols-3">
             <div>
               <p className="font-semibold text-foreground">BestInSeattle</p>

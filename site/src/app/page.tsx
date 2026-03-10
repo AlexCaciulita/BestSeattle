@@ -1,10 +1,14 @@
 import Image from "next/image";
 import Link from "next/link";
 import { getTonightBoard, type TonightItem } from "@/lib/tonight-repo";
-import { getTimePeriodLabel } from "@/lib/time-utils";
+import { getTimeContext } from "@/lib/time-utils";
 import { featuredZones } from "@/lib/zones";
 import ForceTheme from "@/components/force-theme";
-import NewsletterForm from "@/components/newsletter-form";
+import TimeAwareHero from "@/components/time-aware-hero";
+import HappeningNowTicker from "@/components/happening-now-ticker";
+import NeighborhoodMap from "@/components/neighborhood-map";
+import StickyNewsletter from "@/components/sticky-newsletter";
+import MobileBottomNav from "@/components/mobile-bottom-nav";
 
 export const revalidate = 300;
 
@@ -21,15 +25,14 @@ const CATEGORIES = [
   { label: "Outdoors", href: "/events?category=outdoors" },
 ];
 
-// ── CARD ──────────────────────────────────────────────────────────────────────
+// ── EVENT CARD ────────────────────────────────────────────────────────────────
 function EventCard({ item }: { item: TonightItem }) {
   return (
     <Link
       href={`/item/${item.id}`}
-      className="group relative block w-[260px] shrink-0 overflow-hidden rounded-xl"
+      className="group relative block w-[240px] shrink-0 overflow-hidden rounded-xl sm:w-[260px]"
       style={{ WebkitTapHighlightColor: "transparent" }}
     >
-      {/* Image */}
       <div className="relative aspect-video overflow-hidden rounded-xl bg-[#1c1c1c]">
         {item.thumbnailUrl ? (
           <Image
@@ -48,34 +51,28 @@ function EventCard({ item }: { item: TonightItem }) {
             </svg>
           </div>
         )}
-
-        {/* Bottom gradient */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
 
-        {/* Time badge */}
         {item.relativeTime && (
           <span className="absolute bottom-2 left-2 rounded-md bg-black/70 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white/90 backdrop-blur-sm">
             {item.relativeTime}
           </span>
         )}
 
-        {/* Category badge */}
         {item.categorySlug && (
           <span className="absolute right-2 top-2 rounded-full bg-[#d4af37]/90 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-black">
             {item.categorySlug.replace(/-/g, " ")}
           </span>
         )}
 
-        {/* Hover glow ring */}
         <div className="absolute inset-0 rounded-xl ring-1 ring-inset ring-white/0 transition-all duration-300 group-hover:ring-[#d4af37]/40" />
       </div>
 
-      {/* Text */}
-      <div className="mt-2.5 px-0.5">
+      <div className="mt-2 px-0.5">
         <p className="line-clamp-1 text-[13px] font-semibold leading-snug text-[#f0f0f0]">
           {item.title}
         </p>
-        <p className="mt-0.5 truncate text-[11px] text-[#666]">
+        <p className="mt-0.5 truncate text-[11px] text-[#555]">
           {item.venueName ?? item.zone}
           {item.estPrice > 0 && ` · $${item.estPrice}`}
         </p>
@@ -99,9 +96,8 @@ function EventRow({
   if (items.length === 0) return null;
 
   return (
-    <section className="mt-10 md:mt-14">
-      {/* Row header */}
-      <div className="mb-4 flex items-center justify-between px-6 md:px-10">
+    <section className="mt-8 md:mt-12">
+      <div className="mb-3 flex items-center justify-between px-5 md:px-10">
         <div className="flex items-center gap-2.5">
           {live && (
             <span className="relative flex h-2 w-2">
@@ -122,13 +118,11 @@ function EventRow({
         </Link>
       </div>
 
-      {/* Carousel */}
       <div className="carousel-fade-right">
-        <div className="carousel-row pl-6 md:pl-10">
+        <div className="carousel-row pl-5 md:pl-10">
           {items.map((item) => (
             <EventCard key={item.id} item={item} />
           ))}
-          {/* Spacer at end so last card doesn't hide behind fade */}
           <div className="w-10 shrink-0" />
         </div>
       </div>
@@ -141,7 +135,7 @@ function RestaurantCard({ item }: { item: TonightItem }) {
   return (
     <Link
       href={`/item/${item.id}`}
-      className="group relative block w-[200px] shrink-0"
+      className="group relative block w-[160px] shrink-0 sm:w-[180px]"
     >
       <div className="relative aspect-square overflow-hidden rounded-xl bg-[#1c1c1c]">
         {item.thumbnailUrl ? (
@@ -151,7 +145,7 @@ function RestaurantCard({ item }: { item: TonightItem }) {
             fill
             unoptimized
             className="object-cover transition-all duration-500 group-hover:scale-105 group-hover:brightness-110"
-            sizes="200px"
+            sizes="180px"
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center text-[#444]">
@@ -175,7 +169,7 @@ function RestaurantCard({ item }: { item: TonightItem }) {
 // ── MAIN PAGE ─────────────────────────────────────────────────────────────────
 export default async function Home() {
   const board = await getTonightBoard();
-  const periodLabel = getTimePeriodLabel();
+  const timeCtx = getTimeContext();
   const hero = board.heroPick;
 
   const tonightItems = [
@@ -186,146 +180,122 @@ export default async function Home() {
   const weekendItems = [...board.tomorrow, ...board.weekend];
   const totalLive = board.happeningNow.length + board.startingSoon.length;
 
+  // Count events per zone for the map
+  const allEvents = [
+    ...board.happeningNow,
+    ...board.startingSoon,
+    ...board.laterTonight,
+    ...board.tomorrow,
+    ...board.weekend,
+    ...board.thisWeek,
+  ];
+  const zoneCounts = new Map<string, number>();
+  for (const e of allEvents) {
+    const zoneSlug = e.zone
+      .toLowerCase()
+      .replace(/\s+\/\s+.*/, "")
+      .replace(/\s+/g, "-");
+    zoneCounts.set(zoneSlug, (zoneCounts.get(zoneSlug) ?? 0) + 1);
+  }
+
+  const mapZones = featuredZones.map((z) => ({
+    slug: z.slug,
+    label: z.label,
+    eventCount: zoneCounts.get(z.slug) ?? 0,
+  }));
+
+  // Ticker items: happening now + starting soon
+  const tickerItems = [...board.happeningNow, ...board.startingSoon].slice(
+    0,
+    20,
+  );
+
   return (
     <>
       <ForceTheme theme="blackgold" />
 
-      {/* ── HERO ──────────────────────────────────────────────────────────── */}
-      <section className="relative min-h-[88vh] overflow-hidden">
-        {/* Background: deep cinematic image */}
-        <div className="absolute inset-0">
-          {hero?.thumbnailUrl ? (
-            <Image
-              src={hero.thumbnailUrl}
-              alt=""
-              fill
-              priority
-              unoptimized
-              className="object-cover"
-              sizes="100vw"
-            />
-          ) : (
-            <Image
-              src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=2400&q=80"
-              alt="Seattle"
-              fill
-              priority
-              unoptimized
-              className="object-cover"
-              sizes="100vw"
-            />
-          )}
+      {/* ── TIME-AWARE HERO ──────────────────────────────────────────────── */}
+      <TimeAwareHero
+        hero={
+          hero
+            ? {
+                id: hero.id,
+                title: hero.title,
+                thumbnailUrl: hero.thumbnailUrl,
+                relativeTime: hero.relativeTime,
+                venueName: hero.venueName,
+                zone: hero.zone,
+                category: hero.category,
+                bookingUrl: hero.bookingUrl,
+              }
+            : null
+        }
+        timeContext={{
+          mood: timeCtx.mood,
+          greeting: timeCtx.greeting,
+          headline: timeCtx.headline,
+          subline: timeCtx.subline,
+          isDark: timeCtx.isDark,
+        }}
+        totalLive={totalLive}
+        totalEvents={board.totalEvents}
+      />
 
-          {/* Multi-layer dark gradients for cinematic depth */}
-          <div className="absolute inset-0 bg-gradient-to-t from-[#080808] via-[#080808]/55 to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#080808]/75 via-[#080808]/20 to-transparent" />
-          <div className="absolute inset-0 bg-[#080808]/20" />
-        </div>
+      {/* ── HAPPENING NOW TICKER ─────────────────────────────────────────── */}
+      <HappeningNowTicker
+        items={tickerItems.map((item) => ({
+          id: item.id,
+          title: item.title,
+          category: item.categorySlug?.replace(/-/g, " "),
+          relativeTime: item.relativeTime,
+          startsAt: item.startsAt,
+          venueName: item.venueName,
+          zone: item.zone,
+        }))}
+      />
 
-        {/* Hero content */}
-        <div className="relative flex h-full min-h-[88vh] flex-col justify-end pb-16 md:pb-20">
-          <div className="mx-auto w-full max-w-6xl px-6 md:px-10">
-
-            {/* Eyebrow */}
-            <p
-              className="animate-fade-up text-[10px] font-bold uppercase tracking-[0.35em] text-[#d4af37]"
-            >
-              Seattle &mdash; {periodLabel}
-            </p>
-
-            {/* Giant headline */}
-            <h1
-              className="animate-fade-up-delay-1 mt-4 max-w-2xl text-[clamp(52px,8vw,96px)] font-bold leading-[0.9] tracking-tight text-white"
-            >
-              What&apos;s<br />
-              <span style={{ color: "#d4af37" }}>Tonight</span>
-            </h1>
-
-            {/* Subline */}
-            <p
-              className="animate-fade-up-delay-2 mt-5 max-w-sm text-[15px] font-light leading-relaxed text-white/50"
-            >
-              {board.totalEvents > 0
-                ? `${board.totalEvents} events curated for Seattle right now.`
-                : "Discover what's actually worth doing."}
-            </p>
-
-            {/* CTAs */}
-            <div className="animate-fade-up-delay-3 mt-8 flex flex-wrap items-center gap-3">
-              <Link
-                href="/tonight"
-                className="group relative overflow-hidden rounded-full bg-[#d4af37] px-7 py-3 text-[13px] font-semibold text-black transition-all duration-300 hover:bg-[#e6c040]"
-              >
-                See Tonight&apos;s Picks
-              </Link>
-              <Link
-                href="/near-me"
-                className="rounded-full border border-white/20 px-7 py-3 text-[13px] font-medium text-white/80 backdrop-blur-sm transition-all duration-300 hover:border-white/40 hover:text-white"
-              >
-                Near Me
-              </Link>
-              <Link
-                href="/events"
-                className="text-[13px] font-medium text-white/40 transition-colors hover:text-white/70"
-              >
-                All Events →
-              </Link>
-            </div>
-
-            {/* Now-playing featured event */}
-            {hero && (
-              <Link
-                href={`/item/${hero.id}`}
-                className="animate-fade-up-delay-3 mt-10 inline-flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 px-4 py-3 backdrop-blur-md transition-all duration-300 hover:border-white/20 hover:bg-white/10"
-              >
-                {totalLive > 0 && (
-                  <span className="relative flex h-1.5 w-1.5 shrink-0">
-                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#22c55e] opacity-75" />
-                    <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[#22c55e]" />
-                  </span>
-                )}
-                <span className="text-[10px] font-bold uppercase tracking-widest text-[#d4af37]">
-                  {totalLive > 0 ? "Live Now" : "Top Pick"}
-                </span>
-                <span className="max-w-[260px] truncate text-[13px] font-medium text-white/90">
-                  {hero.title}
-                </span>
-                {hero.relativeTime && (
-                  <span className="shrink-0 text-[11px] text-white/30">
-                    {hero.relativeTime}
-                  </span>
-                )}
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="shrink-0 text-white/30">
-                  <path d="m9 18 6-6-6-6" />
-                </svg>
-              </Link>
-            )}
-          </div>
-        </div>
-      </section>
-
-      {/* ── STATS BAR ─────────────────────────────────────────────────────── */}
+      {/* ── PULSE STATS ──────────────────────────────────────────────────── */}
       {board.totalEvents > 0 && (
-        <div className="border-y border-[#1a1a1a] bg-[#0e0e0e]">
-          <div className="mx-auto flex max-w-6xl divide-x divide-[#1a1a1a] overflow-x-auto px-6 md:px-10 no-scrollbar">
+        <div className="bg-[#080808]">
+          <div className="mx-auto grid max-w-6xl grid-cols-4 px-5 py-4 md:px-10">
             {[
-              { n: board.happeningNow.length, label: "Now", href: "/tonight", hot: true },
-              { n: board.startingSoon.length, label: "Starting Soon", href: "/tonight" },
-              { n: weekendItems.length, label: "This Weekend", href: "/events/this-weekend" },
-              { n: board.restaurants.length, label: "Restaurants", href: "/best-of/restaurants" },
+              {
+                n: board.happeningNow.length,
+                label: "Live",
+                href: "/tonight",
+                color: board.happeningNow.length > 0 ? "#22c55e" : "#d4af37",
+              },
+              {
+                n: board.startingSoon.length,
+                label: "Soon",
+                href: "/tonight",
+                color: "#d4af37",
+              },
+              {
+                n: weekendItems.length,
+                label: "Weekend",
+                href: "/events/this-weekend",
+                color: "#d4af37",
+              },
+              {
+                n: board.restaurants.length,
+                label: "Eats",
+                href: "/best-of/restaurants",
+                color: "#d4af37",
+              },
             ].map((s) => (
               <Link
                 key={s.label}
                 href={s.href}
-                className="flex shrink-0 flex-col px-6 py-5 transition-colors hover:bg-[#111111]"
+                className="flex flex-col items-center rounded-lg py-2 transition-colors hover:bg-white/5"
               >
                 <span
-                  className="text-2xl font-bold"
-                  style={{ color: s.hot && s.n > 0 ? "#22c55e" : "#d4af37" }}
+                  className="text-xl font-bold tabular-nums md:text-2xl"
+                  style={{ color: s.color }}
                 >
                   {s.n}
                 </span>
-                <span className="mt-0.5 text-[10px] font-medium uppercase tracking-wider text-[#555]">
+                <span className="mt-0.5 text-[9px] font-medium uppercase tracking-wider text-[#555]">
                   {s.label}
                 </span>
               </Link>
@@ -334,8 +304,8 @@ export default async function Home() {
         </div>
       )}
 
-      {/* ── EVENT CAROUSEL ROWS ───────────────────────────────────────────── */}
-      <div className="py-4">
+      {/* ── EVENT ROWS ───────────────────────────────────────────────────── */}
+      <div className="py-2">
         <EventRow
           label="Happening Now"
           items={tonightItems}
@@ -356,17 +326,19 @@ export default async function Home() {
         />
       </div>
 
-      {/* ── CATEGORY STRIP ────────────────────────────────────────────────── */}
-      <section className="mt-6 border-t border-[#111111] pt-8">
-        <div className="px-6 md:px-10">
-          <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#444]">Browse by</p>
+      {/* ── CATEGORY STRIP ───────────────────────────────────────────────── */}
+      <section className="mt-4 border-t border-[#111111] pt-6">
+        <div className="px-5 md:px-10">
+          <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#444]">
+            Browse by
+          </p>
         </div>
-        <div className="carousel-row mt-4 pl-6 pr-6 md:pl-10">
+        <div className="carousel-row mt-3 pl-5 pr-5 md:pl-10">
           {CATEGORIES.map((cat) => (
             <Link
               key={cat.label}
               href={cat.href}
-              className="shrink-0 rounded-full border border-[#222] bg-[#111] px-5 py-2.5 text-[12px] font-medium text-[#888] transition-all duration-200 hover:border-[#d4af37]/50 hover:bg-[#1a1500] hover:text-[#d4af37]"
+              className="shrink-0 rounded-full border border-[#222] bg-[#111] px-5 py-2.5 text-[12px] font-medium text-[#888] transition-all duration-200 hover:border-[#d4af37]/50 hover:bg-[#1a1500] hover:text-[#d4af37] active:scale-95"
             >
               {cat.label}
             </Link>
@@ -374,10 +346,10 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* ── RESTAURANT ROW ────────────────────────────────────────────────── */}
+      {/* ── RESTAURANT ROW ───────────────────────────────────────────────── */}
       {board.restaurants.length > 0 && (
-        <section className="mt-12">
-          <div className="mb-4 flex items-center justify-between px-6 md:px-10">
+        <section className="mt-10">
+          <div className="mb-3 flex items-center justify-between px-5 md:px-10">
             <h2 className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#888]">
               Top Restaurants
             </h2>
@@ -389,7 +361,7 @@ export default async function Home() {
             </Link>
           </div>
           <div className="carousel-fade-right">
-            <div className="carousel-row pl-6 md:pl-10">
+            <div className="carousel-row pl-5 md:pl-10">
               {board.restaurants.map((item) => (
                 <RestaurantCard key={item.id} item={item} />
               ))}
@@ -399,56 +371,32 @@ export default async function Home() {
         </section>
       )}
 
-      {/* ── NEIGHBORHOODS ─────────────────────────────────────────────────── */}
-      <section className="mt-14">
-        <div className="mb-4 flex items-center justify-between px-6 md:px-10">
-          <div>
-            <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#444]">Explore</p>
-            <h2 className="mt-1 text-[11px] font-bold uppercase tracking-[0.2em] text-[#888]">
-              By Neighborhood
-            </h2>
+      {/* ── NEIGHBORHOOD MAP ─────────────────────────────────────────────── */}
+      <section className="mt-14 px-5 md:px-10">
+        <div className="mx-auto max-w-6xl">
+          <div className="mb-6 flex items-center justify-between">
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#444]">
+                Explore
+              </p>
+              <h2 className="mt-1 text-[11px] font-bold uppercase tracking-[0.2em] text-[#888]">
+                Neighborhoods
+              </h2>
+            </div>
+            <Link
+              href="/zones"
+              className="text-[11px] font-semibold uppercase tracking-wider text-[#d4af37] transition-opacity hover:opacity-70"
+            >
+              See all →
+            </Link>
           </div>
-          <Link
-            href="/zones"
-            className="text-[11px] font-semibold uppercase tracking-wider text-[#d4af37] transition-opacity hover:opacity-70"
-          >
-            See all →
-          </Link>
-        </div>
-        <div className="carousel-fade-right">
-          <div className="carousel-row pl-6 md:pl-10">
-            {featuredZones.map((zone) => (
-              <Link
-                key={zone.slug}
-                href={`/zones/${zone.slug}`}
-                className="group relative block w-[180px] shrink-0 overflow-hidden rounded-xl"
-              >
-                <div className="relative aspect-square overflow-hidden rounded-xl bg-[#1c1c1c]">
-                  <Image
-                    src={zone.image}
-                    alt={zone.label}
-                    fill
-                    unoptimized
-                    className="object-cover transition-all duration-500 group-hover:scale-105 group-hover:brightness-110"
-                    sizes="180px"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-                  <div className="absolute inset-0 rounded-xl ring-1 ring-inset ring-white/0 transition-all duration-300 group-hover:ring-[#d4af37]/40" />
-                  <div className="absolute bottom-0 left-0 p-3">
-                    <p className="text-[12px] font-semibold leading-tight text-white">
-                      {zone.label.split(" /")[0]}
-                    </p>
-                  </div>
-                </div>
-              </Link>
-            ))}
-            <div className="w-10 shrink-0" />
-          </div>
+
+          <NeighborhoodMap zones={mapZones} />
         </div>
       </section>
 
-      {/* ── EDITORIAL SPLITS ──────────────────────────────────────────────── */}
-      <section className="mx-auto mt-16 max-w-6xl grid grid-cols-1 gap-4 px-6 md:grid-cols-3 md:px-10">
+      {/* ── EDITORIAL SPLITS ─────────────────────────────────────────────── */}
+      <section className="mx-auto mt-14 max-w-6xl grid grid-cols-1 gap-3 px-5 md:grid-cols-3 md:px-10">
         {[
           {
             label: "Date Night",
@@ -468,9 +416,9 @@ export default async function Home() {
           <Link
             key={item.href}
             href={item.href}
-            className={`group relative overflow-hidden rounded-2xl ${item.span}`}
+            className={`group relative overflow-hidden rounded-2xl transition-transform active:scale-[0.98] ${item.span}`}
           >
-            <div className="relative h-[220px] md:h-[260px]">
+            <div className="relative h-[180px] md:h-[220px]">
               <Image
                 src={item.img}
                 alt={item.title}
@@ -481,32 +429,27 @@ export default async function Home() {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" />
               <div className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-white/0 transition-all duration-300 group-hover:ring-[#d4af37]/30" />
-              <div className="absolute bottom-0 left-0 p-6">
+              <div className="absolute bottom-0 left-0 p-5">
                 <p className="text-[9px] font-bold uppercase tracking-[0.3em] text-[#d4af37]">
                   {item.label}
                 </p>
-                <p className="mt-1.5 text-[18px] font-semibold text-white">{item.title}</p>
+                <p className="mt-1 text-[16px] font-semibold text-white">
+                  {item.title}
+                </p>
               </div>
             </div>
           </Link>
         ))}
       </section>
 
-      {/* ── NEWSLETTER ────────────────────────────────────────────────────── */}
-      <section className="mx-auto mt-16 max-w-xl px-6 pb-20 text-center md:px-10">
-        <p className="text-[9px] font-bold uppercase tracking-[0.35em] text-[#444]">
-          Stay Ahead
-        </p>
-        <h2 className="mt-3 text-[28px] font-bold leading-tight text-[#f0f0f0]">
-          Seattle&apos;s best,<br />in your inbox.
-        </h2>
-        <p className="mx-auto mt-3 max-w-xs text-[13px] leading-relaxed text-[#555]">
-          Weekly picks — events, restaurants, and local gems. No noise.
-        </p>
-        <div className="mt-8">
-          <NewsletterForm />
-        </div>
-      </section>
+      {/* ── BOTTOM SPACER (mobile nav clearance) ─────────────────────────── */}
+      <div className="h-24 md:h-16" />
+
+      {/* ── FLOATING NEWSLETTER ──────────────────────────────────────────── */}
+      <StickyNewsletter />
+
+      {/* ── MOBILE BOTTOM NAV ────────────────────────────────────────────── */}
+      <MobileBottomNav />
     </>
   );
 }
