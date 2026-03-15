@@ -37,7 +37,7 @@ export function getSeedEvents(): EventItem[] {
   const rows = readJsonFile<EventItem[]>("seed_events.json", []);
   return rows.map((row, idx) => ({
     ...row,
-    zone: row.zone ?? "Seattle Core",
+    zone: row.zone ?? "Seattle",
     timeframe: row.timeframe ?? "week",
     est_price: typeof row.est_price === "number" ? row.est_price : 30,
     sponsored: row.sponsored ?? idx === 1,

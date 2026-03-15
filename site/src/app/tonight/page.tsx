@@ -5,6 +5,7 @@ import { getTimePeriodLabel } from "@/lib/time-utils";
 import type { TonightItem } from "@/lib/tonight-repo";
 import ImagePlaceholder from "@/components/image-placeholder";
 import Breadcrumbs from "@/components/breadcrumbs";
+import TonightHeroCarousel from "@/components/tonight-hero-carousel";
 
 export const revalidate = 300;
 
@@ -25,7 +26,7 @@ function Section({
   if (items.length === 0) return null;
 
   return (
-    <section className="mt-10">
+    <section className="mt-8 sm:mt-10">
       <div className="flex items-center gap-3">
         {accent && (
           <span className="relative flex h-2.5 w-2.5">
@@ -33,22 +34,22 @@ function Section({
             <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-status-open" />
           </span>
         )}
-        <h2 className="text-2xl font-semibold">{title}</h2>
+        <h2 className="text-xl font-semibold sm:text-2xl">{title}</h2>
         <span className="text-sm text-muted">({items.length})</span>
       </div>
-      <div className="mt-4 grid gap-x-5 gap-y-8 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="mt-4 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {items.map((item) => (
-          <Link key={`${title}-${item.id}`} href={`/item/${item.id}`} className="group block">
+          <Link key={`${title}-${item.id}`} href={item.bookingUrl || `/item/${item.id}`} className="group block">
             <article>
               <div className="relative overflow-hidden rounded-xl bg-placeholder-bg">
-                <div className="relative aspect-[4/3]">
+                <div className="relative aspect-[16/9] sm:aspect-[4/3]">
                   {item.thumbnailUrl ? (
                     <Image
                       src={item.thumbnailUrl}
                       alt={item.title}
                       fill
                       className="object-cover transition-transform duration-300 group-hover:scale-105"
-                      sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                       unoptimized
                     />
                   ) : (
@@ -66,8 +67,8 @@ function Section({
                   </span>
                 )}
               </div>
-              <div className="px-0.5 pt-3">
-                <h3 className="line-clamp-1 text-[15px] font-semibold text-foreground">
+              <div className="pt-3">
+                <h3 className="line-clamp-2 text-[15px] font-semibold text-foreground sm:line-clamp-1">
                   {item.title}
                 </h3>
                 <p className="mt-1 flex items-center gap-1 text-sm text-muted">
@@ -82,18 +83,11 @@ function Section({
                   {item.estPrice > 0 && `~$${item.estPrice}`}
                   {item.estPrice > 0 && item.category && " · "}
                   {item.category}
-                  {item.source && ` · ${item.source}`}
                 </p>
                 {item.bookingUrl && (
-                  <a
-                    href={item.bookingUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    onClick={(e) => e.stopPropagation()}
-                    className="mt-2 inline-block rounded-full border border-accent px-3 py-1 text-xs font-semibold text-accent transition-colors hover:bg-accent hover:text-black"
-                  >
-                    Get Tickets
-                  </a>
+                  <span className="mt-2 inline-block rounded-full border border-accent px-3 py-1 text-xs font-semibold text-accent">
+                    Tickets Available
+                  </span>
                 )}
               </div>
             </article>
@@ -112,71 +106,35 @@ export default async function TonightPage() {
     board.happeningNow.length + board.startingSoon.length + board.laterTonight.length;
 
   return (
-    <div className="mx-auto max-w-6xl px-6 py-8">
+    <div className="mx-auto max-w-6xl px-4 pb-24 pt-6 sm:px-6 md:pb-8 md:pt-8">
       <Breadcrumbs segments={[{ label: "Tonight" }]} />
 
-      <div className="mt-4 flex items-end justify-between">
-        <div>
-          <h1 className="text-4xl font-bold">Tonight in Seattle</h1>
-          <p className="mt-2 text-muted">
-            {periodLabel} — {totalTonight > 0 ? `${totalTonight} events tonight` : "curated picks with booking links"}
-          </p>
+      <div className="mt-3 sm:mt-4">
+        <div className="flex items-end justify-between gap-4">
+          <div>
+            <h1 className="text-2xl font-bold sm:text-4xl">Tonight in Seattle</h1>
+            <p className="mt-1 text-sm text-muted sm:mt-2 sm:text-base">
+              {periodLabel} — {totalTonight > 0 ? `${totalTonight} events tonight` : "curated picks with booking links"}
+            </p>
+          </div>
+          <Link href="/events" className="shrink-0 text-sm font-medium text-accent hover:underline">
+            All events →
+          </Link>
         </div>
-        <Link href="/events" className="text-sm font-medium text-accent hover:underline">
-          All events →
-        </Link>
       </div>
 
-      {/* Hero pick */}
-      {board.heroPick && (
-        <section className="mt-8">
-          <Link href={`/item/${board.heroPick.id}`} className="group block">
-            <div className="relative overflow-hidden rounded-2xl">
-              <div className="relative h-[280px] md:h-[360px]">
-                {board.heroPick.thumbnailUrl ? (
-                  <Image
-                    src={board.heroPick.thumbnailUrl}
-                    alt={board.heroPick.title}
-                    fill
-                    className="object-cover transition-transform duration-500 group-hover:scale-105"
-                    sizes="100vw"
-                    priority
-                    unoptimized
-                  />
-                ) : (
-                  <ImagePlaceholder itemType={board.heroPick.kind} />
-                )}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
-                <div className="absolute bottom-0 left-0 p-6 md:p-8">
-                  <div className="flex items-center gap-2">
-                    <span className="rounded-full bg-accent px-2.5 py-0.5 text-xs font-bold text-black">
-                      Top Pick
-                    </span>
-                    {board.heroPick.relativeTime && (
-                      <span className="text-sm text-white/70">{board.heroPick.relativeTime}</span>
-                    )}
-                  </div>
-                  <h2 className="mt-2 text-2xl font-bold text-white md:text-3xl">
-                    {board.heroPick.title}
-                  </h2>
-                  <p className="mt-1 text-white/70">
-                    {board.heroPick.venueName && `${board.heroPick.venueName} · `}
-                    {board.heroPick.zone}
-                    {board.heroPick.estPrice > 0 && ` · ~$${board.heroPick.estPrice}`}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </Link>
-        </section>
+      {/* Hero carousel — top picks */}
+      {board.heroCarousel.length > 0 && (
+        <TonightHeroCarousel items={board.heroCarousel} />
       )}
 
+      {/* All events by time window */}
       <Section title="Happening Now" items={board.happeningNow} accent />
       <Section title="Starting Soon" items={board.startingSoon} />
       <Section title="Later Tonight" items={board.laterTonight} />
 
       {totalTonight === 0 && (
-        <section className="mt-10 rounded-xl border border-border bg-surface p-8 text-center">
+        <section className="mt-8 rounded-xl border border-border bg-surface p-6 text-center sm:mt-10 sm:p-8">
           <p className="text-lg font-medium">Nothing scheduled tonight yet</p>
           <p className="mt-2 text-sm text-muted">
             Check out <Link href="/events/this-weekend" className="text-accent hover:underline">this weekend</Link> or{" "}
@@ -187,14 +145,14 @@ export default async function TonightPage() {
 
       {/* Restaurant picks */}
       {board.restaurants.length > 0 && (
-        <section className="mt-12">
+        <section className="mt-10 sm:mt-12">
           <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-semibold">Date Night Restaurants</h2>
-            <Link href="/best-of/restaurants" className="text-sm font-medium text-accent hover:underline">
+            <h2 className="text-xl font-semibold sm:text-2xl">Date Night Restaurants</h2>
+            <Link href="/eat" className="shrink-0 text-sm font-medium text-accent hover:underline">
               View all →
             </Link>
           </div>
-          <div className="mt-4 grid gap-x-5 gap-y-8 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-4 grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
             {board.restaurants.slice(0, 4).map((item) => (
               <Link key={item.id} href={`/item/${item.id}`} className="group block">
                 <article>
@@ -206,7 +164,7 @@ export default async function TonightPage() {
                           alt={item.title}
                           fill
                           className="object-cover transition-transform duration-300 group-hover:scale-105"
-                          sizes="(max-width: 768px) 50vw, 25vw"
+                          sizes="(max-width: 640px) 50vw, 25vw"
                           unoptimized
                         />
                       ) : (
@@ -214,9 +172,9 @@ export default async function TonightPage() {
                       )}
                     </div>
                   </div>
-                  <div className="px-0.5 pt-3">
-                    <h3 className="line-clamp-1 text-[15px] font-semibold">{item.title}</h3>
-                    <p className="mt-0.5 text-sm text-muted">{item.category} · {item.zone}</p>
+                  <div className="pt-2 sm:pt-3">
+                    <h3 className="line-clamp-1 text-sm font-semibold sm:text-[15px]">{item.title}</h3>
+                    <p className="mt-0.5 text-xs text-muted sm:text-sm">{item.category} · {item.zone}</p>
                   </div>
                 </article>
               </Link>

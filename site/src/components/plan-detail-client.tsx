@@ -9,7 +9,7 @@ type Props = {
   items: PlanItem[];
 };
 
-const ZONES = ["All", "Seattle Core", "Eastside/PNW", "Capitol Hill", "Ballard", "Bellevue"];
+const ZONES = ["All", "Seattle", "Eastside/PNW", "Capitol Hill", "Ballard", "Bellevue"];
 const BUDGETS = [
   { label: "All budgets", value: 9999 },
   { label: "Under $25", value: 25 },

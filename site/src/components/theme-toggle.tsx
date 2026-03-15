@@ -2,15 +2,19 @@
 
 import { useCallback, useEffect, useSyncExternalStore } from "react";
 
-type ThemeName = "light" | "blackgold";
+type ThemeName = "light" | "dark";
+
+function normalizeTheme(value: string | null): ThemeName {
+  return value === "light" ? "light" : "dark";
+}
 
 function getSnapshot(): ThemeName {
-  if (typeof window === "undefined") return "light";
-  return (localStorage.getItem("bis_theme") as ThemeName) ?? "light";
+  if (typeof window === "undefined") return "dark";
+  return normalizeTheme(localStorage.getItem("bis_theme"));
 }
 
 function getServerSnapshot(): ThemeName {
-  return "light";
+  return "dark";
 }
 
 function subscribe(callback: () => void) {
@@ -26,7 +30,7 @@ export default function ThemeToggle() {
   }, [theme]);
 
   const toggleTheme = useCallback(() => {
-    const next: ThemeName = theme === "light" ? "blackgold" : "light";
+    const next: ThemeName = theme === "light" ? "dark" : "light";
     localStorage.setItem("bis_theme", next);
     document.documentElement.setAttribute("data-theme", next);
     // Trigger storage event for useSyncExternalStore
@@ -39,7 +43,7 @@ export default function ThemeToggle() {
       onClick={toggleTheme}
       className="rounded-full border border-border px-3 py-1 text-xs text-muted hover:text-foreground"
     >
-      {theme === "light" ? "☀️ Light" : "🌙 Dark"}
+      {theme === "light" ? "Light" : "Apple TV Dark"}
     </button>
   );
 }

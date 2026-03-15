@@ -29,7 +29,7 @@ export function parseIntent(query: string): DiscoveryIntent {
     "bellevue",
     "redmond",
     "kirkland",
-    "seattle core",
+    "seattle",
     "eastside",
   ];
   const zone = knownZones.find((z) => q.includes(z)) ?? "All";

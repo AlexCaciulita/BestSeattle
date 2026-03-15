@@ -74,7 +74,7 @@ export async function searchNearby(
 
   const items: NearbyResult[] = (data ?? []).map((row: Record<string, unknown>) => ({
     ...row,
-    zone: (row.zone as string) ?? "Seattle Core",
+    zone: (row.zone as string) ?? "Seattle",
     category: (row.category as string) ?? "General",
     source: (row.source as string) ?? "BestInSeattle",
     distance_km: row.distance_km as number,

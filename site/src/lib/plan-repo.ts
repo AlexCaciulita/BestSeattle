@@ -15,7 +15,7 @@ export type PlanItem = {
 };
 
 function normalizeZone(z?: string | null) {
-  if (!z) return "Seattle Core";
+  if (!z) return "Seattle";
   return z;
 }
 

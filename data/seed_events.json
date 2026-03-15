@@ -1,0 +1,162 @@
+[
+  {
+    "title": "Fleet Foxes at The Paramount",
+    "source": "Ticketmaster",
+    "category": "Concerts",
+    "zone": "Downtown",
+    "timeframe": "tonight",
+    "est_price": 65,
+    "starts_at": "2026-03-10T03:50:48.141Z",
+    "thumbnail_url": "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?auto=format&fit=crop&w=1200&q=80"
+  },
+  {
+    "title": "Sonics vs Lakers — Climate Pledge Arena",
+    "source": "SeatGeek",
+    "category": "Sports",
+    "zone": "Queen Anne",
+    "timeframe": "tonight",
+    "est_price": 120,
+    "starts_at": "2026-03-10T04:20:48.142Z",
+    "thumbnail_url": "https://images.unsplash.com/photo-1504450758481-7338bbe75005?auto=format&fit=crop&w=1200&q=80"
+  },
+  {
+    "title": "Stand-Up Showcase at Comedy Underground",
+    "source": "Eventbrite",
+    "category": "Comedy",
+    "zone": "Capitol Hill",
+    "timeframe": "tonight",
+    "est_price": 25,
+    "starts_at": "2026-03-10T04:32:48.142Z",
+    "thumbnail_url": "https://images.unsplash.com/photo-1585699324551-f6c309eedeca?auto=format&fit=crop&w=1200&q=80"
+  },
+  {
+    "title": "DJ Set at Neumos — Phoebe Bridgers Afterparty",
+    "source": "RA",
+    "category": "Nightlife",
+    "zone": "Capitol Hill",
+    "timeframe": "tonight",
+    "est_price": 20,
+    "starts_at": "2026-03-10T05:35:48.142Z",
+    "thumbnail_url": "https://images.unsplash.com/photo-1571266028243-e4733b0f0bb0?auto=format&fit=crop&w=1200&q=80"
+  },
+  {
+    "title": "Late Night Food Tour — Pike Place After Dark",
+    "source": "Airbnb Experiences",
+    "category": "Food & Drink",
+    "zone": "Downtown",
+    "timeframe": "tonight",
+    "est_price": 45,
+    "starts_at": "2026-03-10T06:02:48.142Z",
+    "thumbnail_url": "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=1200&q=80"
+  },
+  {
+    "title": "Immersive Van Gogh — Last Weekend",
+    "source": "Fever",
+    "category": "Arts",
+    "zone": "SoDo",
+    "timeframe": "tonight",
+    "est_price": 40,
+    "starts_at": "2026-03-10T08:20:48.142Z",
+    "thumbnail_url": "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?auto=format&fit=crop&w=1200&q=80"
+  },
+  {
+    "title": "Hamilton — 5th Avenue Theatre",
+    "source": "Broadway in Seattle",
+    "category": "Theater",
+    "zone": "Downtown",
+    "timeframe": "tonight",
+    "est_price": 89,
+    "starts_at": "2026-03-10T08:50:48.142Z",
+    "thumbnail_url": "https://images.unsplash.com/photo-1503095396549-807759245b35?auto=format&fit=crop&w=1200&q=80"
+  },
+  {
+    "title": "Seattle Farmers Market — Ballard",
+    "source": "Visit Seattle",
+    "category": "Markets",
+    "zone": "Ballard",
+    "timeframe": "weekend",
+    "est_price": 0,
+    "starts_at": "2026-03-10T22:50:48.142Z",
+    "thumbnail_url": "https://images.unsplash.com/photo-1488459716781-31db52582fe9?auto=format&fit=crop&w=1200&q=80"
+  },
+  {
+    "title": "Brunch & Drag Show — Capitol Hill",
+    "source": "Eventbrite",
+    "category": "Family",
+    "zone": "Capitol Hill",
+    "timeframe": "weekend",
+    "est_price": 35,
+    "starts_at": "2026-03-11T00:50:48.142Z",
+    "thumbnail_url": "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=1200&q=80"
+  },
+  {
+    "title": "Sounders FC vs Portland Timbers",
+    "source": "MLS",
+    "category": "Sports",
+    "zone": "SoDo",
+    "timeframe": "weekend",
+    "est_price": 55,
+    "starts_at": "2026-03-11T02:50:48.142Z",
+    "thumbnail_url": "https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?auto=format&fit=crop&w=1200&q=80"
+  },
+  {
+    "title": "Wine Walk — Woodinville",
+    "source": "Visit Seattle",
+    "category": "Food & Drink",
+    "zone": "Eastside",
+    "timeframe": "weekend",
+    "est_price": 60,
+    "starts_at": "2026-03-12T00:50:48.142Z",
+    "thumbnail_url": "https://images.unsplash.com/photo-1474722883778-792e7990302f?auto=format&fit=crop&w=1200&q=80"
+  },
+  {
+    "title": "Kayaking on Lake Union — Sunset Tour",
+    "source": "Airbnb Experiences",
+    "category": "Outdoors",
+    "zone": "South Lake Union",
+    "timeframe": "weekend",
+    "est_price": 75,
+    "starts_at": "2026-03-12T02:50:48.142Z",
+    "thumbnail_url": "https://images.unsplash.com/photo-1472745433479-4556f22e32c2?auto=format&fit=crop&w=1200&q=80"
+  },
+  {
+    "title": "Museum of Pop Culture — David Bowie Exhibit",
+    "source": "MoPOP",
+    "category": "Arts",
+    "zone": "Queen Anne",
+    "timeframe": "weekend",
+    "est_price": 30,
+    "starts_at": "2026-03-12T04:50:48.142Z",
+    "thumbnail_url": "https://images.unsplash.com/photo-1518998053901-5348d3961a04?auto=format&fit=crop&w=1200&q=80"
+  },
+  {
+    "title": "Trivia Night — Optimism Brewing",
+    "source": "Eventbrite",
+    "category": "Nightlife",
+    "zone": "Capitol Hill",
+    "timeframe": "week",
+    "est_price": 0,
+    "starts_at": "2026-03-13T04:50:48.142Z",
+    "thumbnail_url": "https://images.unsplash.com/photo-1575037614876-c38a4ca44f4f?auto=format&fit=crop&w=1200&q=80"
+  },
+  {
+    "title": "Open Mic Night — The Crocodile",
+    "source": "The Crocodile",
+    "category": "Concerts",
+    "zone": "Belltown",
+    "timeframe": "week",
+    "est_price": 10,
+    "starts_at": "2026-03-14T04:50:48.142Z",
+    "thumbnail_url": "https://images.unsplash.com/photo-1511192336575-5a79af67a629?auto=format&fit=crop&w=1200&q=80"
+  },
+  {
+    "title": "Seattle Art Walk — First Thursday",
+    "source": "Visit Seattle",
+    "category": "Arts",
+    "zone": "Pioneer Square",
+    "timeframe": "week",
+    "est_price": 0,
+    "starts_at": "2026-03-15T04:50:48.142Z",
+    "thumbnail_url": "https://images.unsplash.com/photo-1531243269054-5ebf6f34081e?auto=format&fit=crop&w=1200&q=80"
+  }
+]

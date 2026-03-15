@@ -49,23 +49,23 @@ export default function ListingLayout({
   }, [filteredItems, searchQuery]);
 
   return (
-    <div className="mx-auto max-w-6xl px-6 py-8">
+    <div className="mx-auto max-w-6xl px-4 pb-24 pt-6 sm:px-6 md:pb-8 md:pt-8">
       <Breadcrumbs segments={breadcrumbs} />
 
-      <div className="flex flex-wrap items-center justify-between gap-4">
+      <div className="mt-2 flex items-center justify-between gap-3">
         <ItemCountHeader count={displayItems.length} label={label} />
-        <div className="flex items-center gap-3">
-          <div className="w-64">
-            <SearchBar
-              placeholder={searchPlaceholder ?? `Search ${label.toLowerCase()}...`}
-              onSearch={setSearchQuery}
-            />
-          </div>
-          <ViewToggle mode={viewMode} onChange={setViewMode} />
-        </div>
+        <ViewToggle mode={viewMode} onChange={setViewMode} />
       </div>
 
-      <div className="mt-6 flex gap-8">
+      <div className="mt-4">
+        <SearchBar
+          placeholder={searchPlaceholder ?? `Search ${label.toLowerCase()}...`}
+          onSearch={setSearchQuery}
+        />
+      </div>
+
+      {/* Filters — collapsible on mobile, sidebar on desktop */}
+      <div className="mt-4 lg:mt-6 lg:flex lg:gap-8">
         <FilterSidebar items={items} config={filterConfig} onFilter={handleFilter} initialCategory={initialCategory ?? undefined} />
 
         <div className="min-w-0 flex-1">
@@ -73,7 +73,7 @@ export default function ListingLayout({
             <div
               className={
                 viewMode === "grid"
-                  ? "grid gap-x-5 gap-y-8 sm:grid-cols-2 lg:grid-cols-3"
+                  ? "grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3"
                   : "space-y-4"
               }
             >

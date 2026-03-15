@@ -55,6 +55,7 @@ export async function searchNearbyPlaces(
       },
     },
     maxResultCount: maxResults,
+    rankPreference: "DISTANCE",
   };
 
   if (types?.length) {

@@ -10,7 +10,7 @@ export async function POST(req: NextRequest) {
 
     const intent = parseIntent(query);
     const board = await getTonightBoard();
-    const all = [...board.now, ...board.dateNight, ...board.family].filter(
+    const all = [...board.happeningNow, ...board.startingSoon, ...board.laterTonight, ...board.restaurants].filter(
       (item, idx, arr) => arr.findIndex((x) => x.id === item.id) === idx,
     );
 

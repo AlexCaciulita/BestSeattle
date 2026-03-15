@@ -80,7 +80,7 @@ function localFallback(filters: Filters): Item[] {
     item_type: "event",
     title: e.title,
     source: e.source,
-    zone: e.zone ?? "Seattle Core",
+    zone: e.zone ?? "Seattle",
     category: e.category,
     score: null,
     sponsored: e.sponsored ?? false,
@@ -160,7 +160,7 @@ export async function getItems(filters: Filters = {}): Promise<Item[]> {
 
   let items = ((data ?? []) as Item[]).map((row) => ({
     ...row,
-    zone: row.zone ?? "Seattle Core",
+    zone: row.zone ?? "Seattle",
     category: row.category ?? "General",
     source: row.source ?? "BestInSeattle",
     metadata: {
@@ -210,7 +210,7 @@ export async function getItemById(id: number): Promise<Item | null> {
   const row = data as Item;
   return {
     ...row,
-    zone: row.zone ?? "Seattle Core",
+    zone: row.zone ?? "Seattle",
     category: row.category ?? "General",
     source: row.source ?? "BestInSeattle",
     metadata: {

@@ -1,0 +1,58 @@
+[
+  {
+    "name": "Canlis",
+    "editorial_source": "The Infatuation",
+    "editorial_score_raw": 9.4,
+    "zone_hint": "Queen Anne",
+    "cuisine": "Fine Dining"
+  },
+  {
+    "name": "Bateau",
+    "editorial_source": "Eater Seattle",
+    "editorial_score_raw": 9.1,
+    "zone_hint": "Capitol Hill",
+    "cuisine": "American"
+  },
+  {
+    "name": "Kedai Makan",
+    "editorial_source": "The Infatuation",
+    "editorial_score_raw": 9,
+    "zone_hint": "Capitol Hill",
+    "cuisine": "Malaysian"
+  },
+  {
+    "name": "Wataru",
+    "editorial_source": "Seattle Met",
+    "editorial_score_raw": 8.9,
+    "zone_hint": "Wallingford",
+    "cuisine": "Japanese Omakase"
+  },
+  {
+    "name": "The Walrus and the Carpenter",
+    "editorial_source": "Eater Seattle",
+    "editorial_score_raw": 8.8,
+    "zone_hint": "Ballard",
+    "cuisine": "Seafood / Raw Bar"
+  },
+  {
+    "name": "Archipelago",
+    "editorial_source": "The Infatuation",
+    "editorial_score_raw": 8.7,
+    "zone_hint": "Hillman City",
+    "cuisine": "Filipino"
+  },
+  {
+    "name": "Eden Hill",
+    "editorial_source": "Seattle Met",
+    "editorial_score_raw": 8.6,
+    "zone_hint": "Queen Anne",
+    "cuisine": "Tasting Menu"
+  },
+  {
+    "name": "Altura",
+    "editorial_source": "Eater Seattle",
+    "editorial_score_raw": 8.5,
+    "zone_hint": "Capitol Hill",
+    "cuisine": "Italian"
+  }
+]

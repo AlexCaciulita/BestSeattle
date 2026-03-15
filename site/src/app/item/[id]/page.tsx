@@ -21,10 +21,10 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   if (!item) return { title: "Not Found — BestInSeattle" };
   return {
     title: `${item.title} — BestInSeattle`,
-    description: `${item.category} in ${item.zone}. Curated by BestInSeattle.`,
+    description: `${item.category}${item.venue_name ? ` at ${item.venue_name}` : ` in ${item.zone}`}. Curated by BestInSeattle.`,
     openGraph: {
       title: item.title,
-      description: `${item.category} in ${item.zone}`,
+      description: `${item.category}${item.venue_name ? ` at ${item.venue_name}` : ` in ${item.zone}`}`,
       images: item.metadata?.thumbnail_url ? [{ url: item.metadata.thumbnail_url }] : [],
     },
   };
@@ -40,6 +40,8 @@ export default async function ItemDetailPage({ params }: { params: Promise<{ id:
   const price = item.metadata?.est_price;
   const dollars = priceToDollars(price);
   const city = item.metadata?.city ?? "Seattle";
+  const venueName = item.venue_name;
+  const zone = item.zone === "Seattle Core" ? "Seattle" : item.zone;
 
   const typeLabel = item.item_type === "event" ? "Events" : item.item_type === "restaurant" ? "Restaurants" : "Places";
 
@@ -98,7 +100,7 @@ export default async function ItemDetailPage({ params }: { params: Promise<{ id:
               <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
               <circle cx="12" cy="10" r="3" />
             </svg>
-            {item.zone}, {city}
+            {venueName ? `${venueName} · ${city}` : zone !== city ? `${zone}, ${city}` : city}
           </span>
           {dollars && (
             <>
@@ -146,7 +148,7 @@ export default async function ItemDetailPage({ params }: { params: Promise<{ id:
               href={booking}
               target="_blank"
               rel="noreferrer"
-              className="inline-block rounded-full bg-accent px-6 py-3 text-sm font-semibold text-black transition-opacity hover:opacity-90"
+              className="inline-block rounded-full border border-border px-6 py-3 text-sm font-semibold transition-colors hover:border-accent hover:text-accent"
             >
               Book / View Details
             </a>

@@ -12,7 +12,7 @@ export const zones: Zone[] = [
     slug: "downtown",
     label: "Downtown / Belltown / SLU",
     searchTerms: ["Downtown", "Belltown", "SLU", "South Lake Union", "Pioneer Square", "Waterfront"],
-    image: "https://images.unsplash.com/photo-1502175353174-a7a70e73b4c3?auto=format&fit=crop&w=800&q=80",
+    image: "https://images.unsplash.com/photo-1496568816309-51d7c20e3b21?auto=format&fit=crop&w=800&q=80",
     centerLat: 47.6062,
     centerLng: -122.3321,
   },
@@ -108,7 +108,7 @@ export function getZoneBySlug(slug: string): Zone {
       slug,
       label: slug.replaceAll("-", " "),
       searchTerms: [slug.replaceAll("-", " ")],
-      image: "https://images.unsplash.com/photo-1502175353174-a7a70e73b4c3?auto=format&fit=crop&w=800&q=80",
+      image: "https://images.unsplash.com/photo-1496568816309-51d7c20e3b21?auto=format&fit=crop&w=800&q=80",
       centerLat: 47.6062,
       centerLng: -122.3321,
     }

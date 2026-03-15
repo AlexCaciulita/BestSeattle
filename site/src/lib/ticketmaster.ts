@@ -46,14 +46,14 @@ type TmVenue = NonNullable<NonNullable<TmEvent["_embedded"]>["venues"]>[number];
 
 /** Map Ticketmaster venue city to our zone system */
 function venueToZone(venue?: TmVenue): string {
-  if (!venue) return "Seattle Core";
+  if (!venue) return "Seattle";
   const city = venue.city?.name?.toLowerCase() ?? "";
   if (city.includes("bellevue")) return "Bellevue";
   if (city.includes("redmond")) return "Redmond";
   if (city.includes("kirkland")) return "Kirkland";
   if (city.includes("tacoma")) return "Tacoma";
   if (city.includes("everett")) return "Everett";
-  return "Seattle Core";
+  return "Seattle";
 }
 
 /** Pick the best image (prefer 4:3, fallback to largest 16:9) */

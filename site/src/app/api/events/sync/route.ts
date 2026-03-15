@@ -1,22 +1,56 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { fetchAllSeattleAreaEvents } from "@/lib/ticketmaster";
+import { fetchAllSerpApiEvents } from "@/lib/serpapi";
 import { hasSupabaseConfig, getSupabaseClient } from "@/lib/supabase";
+import type { Item } from "@/lib/items-repo";
 
 /**
  * POST /api/events/sync
- * Fetch events from Ticketmaster and upsert into Supabase items_curated table.
- * All events are assigned a canonical category_slug via the normalization pipeline.
+ * Fetch events from all configured sources and upsert into Supabase.
+ *
+ * Query params:
+ *   ?source=ticketmaster  — only Ticketmaster
+ *   ?source=serpapi        — only SerpApi/Google Events
+ *   (default)              — all sources
  */
-export async function POST() {
+export async function POST(req: NextRequest) {
   try {
-    const events = await fetchAllSeattleAreaEvents(50);
+    const source = req.nextUrl.searchParams.get("source");
+
+    const allEvents: Item[] = [];
+
+    // Ticketmaster
+    if (!source || source === "ticketmaster") {
+      try {
+        const tmEvents = await fetchAllSeattleAreaEvents(50);
+        allEvents.push(...tmEvents);
+        console.log(`[sync] Ticketmaster: ${tmEvents.length} events`);
+      } catch (err) {
+        console.error("[sync] Ticketmaster fetch failed:", err);
+      }
+    }
+
+    // SerpApi / Google Events
+    if (!source || source === "serpapi") {
+      if (process.env.SERPAPI_KEY) {
+        try {
+          const serpEvents = await fetchAllSerpApiEvents();
+          allEvents.push(...serpEvents);
+          console.log(`[sync] SerpApi: ${serpEvents.length} events`);
+        } catch (err) {
+          console.error("[sync] SerpApi fetch failed:", err);
+        }
+      } else {
+        console.log("[sync] SERPAPI_KEY not set, skipping Google Events");
+      }
+    }
 
     if (!hasSupabaseConfig()) {
       return NextResponse.json({
         ok: true,
         message: "Fetched events (Supabase not configured — preview only)",
-        count: events.length,
-        events: events.slice(0, 5),
+        count: allEvents.length,
+        events: allEvents.slice(0, 10),
       });
     }
 
@@ -24,42 +58,42 @@ export async function POST() {
 
     let inserted = 0;
     let skipped = 0;
-
-    // Category distribution for logging
     const catCounts = new Map<string, number>();
 
-    for (const event of events) {
-      // Guard: reject writes without category_slug
+    for (const event of allEvents) {
       if (!event.category_slug) {
         console.warn(`Skipping event without category_slug: "${event.title}"`);
         continue;
       }
 
-      // Upsert by source_event_id if available, else dedup by title
+      // Dedup: check by source_event_id first, then by title + source
+      let isDuplicate = false;
+
       if (event.source_event_id) {
         const { data: existing } = await supabase
           .from("items_curated")
           .select("id")
-          .eq("source", "Ticketmaster")
+          .eq("source", event.source)
           .eq("source_event_id", event.source_event_id)
           .limit(1);
 
-        if (existing && existing.length > 0) {
-          skipped++;
-          continue;
-        }
-      } else {
+        isDuplicate = (existing?.length ?? 0) > 0;
+      }
+
+      if (!isDuplicate) {
+        // Also check by title to avoid cross-source duplicates
         const { data: existing } = await supabase
           .from("items_curated")
           .select("id")
           .eq("title", event.title)
-          .eq("source", "Ticketmaster")
           .limit(1);
 
-        if (existing && existing.length > 0) {
-          skipped++;
-          continue;
-        }
+        isDuplicate = (existing?.length ?? 0) > 0;
+      }
+
+      if (isDuplicate) {
+        skipped++;
+        continue;
       }
 
       const { error } = await supabase.from("items_curated").insert({
@@ -107,7 +141,7 @@ export async function POST() {
       message: `Synced ${inserted} new events, skipped ${skipped} duplicates`,
       inserted,
       skipped,
-      total_fetched: events.length,
+      total_fetched: allEvents.length,
       categories: Object.fromEntries(catCounts),
     });
   } catch (err) {
@@ -121,15 +155,45 @@ export async function POST() {
 
 /**
  * GET /api/events/sync
- * Preview what Ticketmaster returns without writing to DB.
+ * Preview events from all sources without writing to DB.
+ *
+ * Query params:
+ *   ?source=ticketmaster
+ *   ?source=serpapi
  */
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
-    const events = await fetchAllSeattleAreaEvents(30);
+    const source = req.nextUrl.searchParams.get("source");
+    const allEvents: Item[] = [];
+
+    if (!source || source === "ticketmaster") {
+      try {
+        const tmEvents = await fetchAllSeattleAreaEvents(30);
+        allEvents.push(...tmEvents);
+      } catch (err) {
+        console.error("[sync preview] Ticketmaster failed:", err);
+      }
+    }
+
+    if (!source || source === "serpapi") {
+      if (process.env.SERPAPI_KEY) {
+        try {
+          const serpEvents = await fetchAllSerpApiEvents();
+          allEvents.push(...serpEvents);
+        } catch (err) {
+          console.error("[sync preview] SerpApi failed:", err);
+        }
+      }
+    }
+
     return NextResponse.json({
       ok: true,
-      count: events.length,
-      events,
+      count: allEvents.length,
+      sources: {
+        ticketmaster: allEvents.filter((e) => e.source === "Ticketmaster").length,
+        google_events: allEvents.filter((e) => e.source === "Google Events").length,
+      },
+      events: allEvents,
     });
   } catch (err) {
     console.error("Event fetch failed:", err);

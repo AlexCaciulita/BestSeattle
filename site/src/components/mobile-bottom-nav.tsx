@@ -25,22 +25,22 @@ const NAV_ITEMS = [
     ),
   },
   {
+    href: "/eat",
+    label: "Going Out",
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+        <path d="M8 22h8M12 15v7M4 2l8 10 8-10" />
+        <path d="M4 2h16" />
+      </svg>
+    ),
+  },
+  {
     href: "/near-me",
     label: "Near Me",
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
         <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
         <circle cx="12" cy="10" r="3" />
-      </svg>
-    ),
-  },
-  {
-    href: "/best-of",
-    label: "Eat",
-    icon: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-        <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2" />
-        <path d="M7 2v20M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7" />
       </svg>
     ),
   },
@@ -62,20 +62,22 @@ export default function MobileBottomNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-40 border-t border-[#1a1a1a] bg-[#080808]/95 backdrop-blur-xl md:hidden">
-      <div className="flex items-center justify-around px-2 pb-[env(safe-area-inset-bottom)]">
+    <nav className="app-shell fixed bottom-3 left-3 right-3 z-40 rounded-[28px] md:hidden">
+      <div className="pb-safe flex items-center justify-around px-2 pt-1">
         {NAV_ITEMS.map((item) => {
           const isActive = pathname === item.href;
           return (
             <Link
               key={item.href}
               href={item.href}
-              className={`flex flex-col items-center gap-0.5 px-3 py-2.5 transition-colors ${
-                isActive ? "text-[#d4af37]" : "text-[#555]"
+              className={`flex min-w-[64px] flex-col items-center gap-1 rounded-2xl px-3 py-2.5 transition-all ${
+                isActive
+                  ? "bg-[#f2f3f7] text-[#0b1020] shadow-[0_12px_24px_rgba(255,255,255,0.12)]"
+                  : "text-white/45 hover:text-white/75"
               }`}
             >
               {item.icon}
-              <span className="text-[9px] font-medium tracking-wide">
+              <span className="text-[9px] font-medium tracking-[0.12em]">
                 {item.label}
               </span>
             </Link>
